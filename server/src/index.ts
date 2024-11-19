@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import createHttpError from "http-errors";
+import userRouter from "./routes/userRoutes";
 
 export const app = express();
 app.use(express.json());
@@ -11,4 +11,4 @@ app.get("/healthy", (req: Request, res: Response) => {
   });
 });
 
-// app.use("/api/user");
+app.use("/api/user", userRouter);
