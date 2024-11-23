@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,17 +8,53 @@ datasource db {
 }
 
 model User {
-  id String @id @default(cuid())
-
-  email     String @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   firstname String
   lastname  String
   password  String
+  links     Link[]
+  contents  Content[]
 
   links Link[]
 
   createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  updatedAt DateTime @updatedAt
+}
+
+model Link {
+  id     String  @id @default(cuid())
+  hash   String  @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+
+  createdAt DateTime @default(now())
+}
+
+model Content {
+  id     String      @id @default(cuid())
+  link   String
+  type   ContentType
+  tags   Tag[]
+  user   User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String?
+
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  content   Content? @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  contentId String?
+
+  createdAt DateTime @default(now())
+}
+
+enum ContentType {
+  TEXT
+  IMAGE
+  VIDEO
 }
 
 model Link {
