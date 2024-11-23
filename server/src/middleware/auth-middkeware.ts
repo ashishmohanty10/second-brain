@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 
 interface AuthRequest extends Request {
-  user?: { id: string };
+  user?: { id: string; role: "ADMIN" | "USER" };
 }
 
 export function authMiddleware(
@@ -25,14 +25,14 @@ export function authMiddleware(
   try {
     const decodedToken = jwt.verify(token, config.jwtSecret as string) as {
       userId: string;
+      role: "ADMIN" | "USER";
     };
 
     if (!decodedToken.userId) {
       throw createHttpError(401, "Invalid token payload");
     }
 
-    req.user = { id: decodedToken.userId };
-
+    req.user = { id: decodedToken.userId, role: decodedToken.role };
     next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {

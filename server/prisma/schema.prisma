@@ -15,7 +15,7 @@ model User {
   password  String
   links     Link[]
   contents  Content[]
-  type      UserType  @default(USER)
+  role      UserType  @default(USER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -44,7 +44,7 @@ model Content {
 
 model Tag {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   content   Content? @relation(fields: [contentId], references: [id], onDelete: Cascade)
   contentId String?
 
