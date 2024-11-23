@@ -14,5 +14,5 @@ app.get("/healthy", (req: Request, res: Response) => {
   });
 });
 
-app.use("/api/user", userRouter);
-app.use("/api/admin", [authMiddleware, isAdminMiddleware], adminRouter);
+app.use("/api/v1/", userRouter);
+app.use("/api/v1", adminRouter);

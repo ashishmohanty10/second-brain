@@ -10,9 +10,9 @@ export const registerUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, firstname, lastname, password, role } = req.body;
+  const { email, firstname, lastname, password } = req.body;
 
-  if (!email || !firstname || !lastname || !password || !role) {
+  if (!email || !firstname || !lastname || !password) {
     return next(createHttpError(400, "All fields are required"));
   }
 
@@ -34,7 +34,6 @@ export const registerUser = async (
             firstname,
             lastname,
             password: hasdedPasswrod,
-            role,
           },
         });
 
@@ -92,7 +91,8 @@ export const loginUser = async (
 
     const token = jwt.sign(
       {
-        sub: user.id,
+        userId: user.id,
+        role: user.role,
       },
       config.jwtSecret as string,
       { expiresIn: "7d" }

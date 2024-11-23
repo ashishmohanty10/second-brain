@@ -23,6 +23,8 @@ export function authMiddleware(
   const token = authHeader.split(" ")[1];
 
   try {
+    console.log(token);
+    console.log("Code reached here");
     const decodedToken = jwt.verify(token, config.jwtSecret as string) as {
       userId: string;
       role: "ADMIN" | "USER";
@@ -39,6 +41,8 @@ export function authMiddleware(
       return next(createHttpError(401, "Invalid or expired token"));
     }
 
+    console.log(error);
+    console.log("COde reached error block");
     return next(createHttpError(500, "Internal server error"));
   }
 }

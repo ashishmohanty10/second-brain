@@ -1,7 +1,12 @@
 import express from "express";
 import { authMiddleware } from "../middleware/auth-middkeware";
 import { createTags } from "../controller/admin-controller";
+import { isAdminMiddleware } from "../middleware/admin-middleware";
 
 export const adminRouter = express.Router();
+adminRouter.use(authMiddleware);
 
-adminRouter.post("/tags", createTags);
+//@ts-ignore
+adminRouter.use(isAdminMiddleware);
+
+adminRouter.post("/admin/tags", createTags);
