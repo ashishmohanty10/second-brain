@@ -16,8 +16,6 @@ model User {
   links     Link[]
   contents  Content[]
 
-  links Link[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -55,12 +53,4 @@ enum ContentType {
   TEXT
   IMAGE
   VIDEO
-}
-
-model Link {
-  id   String @id @default(cuid())
-  hash String
-
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String?
 }

@@ -39,7 +39,8 @@ export const registerUser = async (
 
         const token = jwt.sign(
           {
-            sub: newUser.id,
+            userId: newUser.id,
+            role: newUser.role,
           },
           config.jwtSecret as string,
           { expiresIn: "7d" }
@@ -90,7 +91,8 @@ export const loginUser = async (
 
     const token = jwt.sign(
       {
-        sub: user.id,
+        userId: user.id,
+        role: user.role,
       },
       config.jwtSecret as string,
       { expiresIn: "7d" }
