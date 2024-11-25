@@ -15,4 +15,4 @@ app.get("/healthy", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1/", userRouter);
-app.use("/api/v1", adminRouter);
+app.use("/api/v1/", adminRouter);

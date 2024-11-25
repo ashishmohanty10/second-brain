@@ -15,6 +15,7 @@ model User {
   password  String
   links     Link[]
   contents  Content[]
+  role      Role      @default(USER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -31,7 +32,7 @@ model Link {
 
 model Content {
   id     String      @id @default(cuid())
-  link   String
+  link   String      @unique
   type   ContentType
   tags   Tag[]
   user   User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -41,8 +42,9 @@ model Content {
 }
 
 model Tag {
-  id        String   @id @default(cuid())
-  name      String
+  id   String @id @default(cuid())
+  name String
+
   content   Content? @relation(fields: [contentId], references: [id], onDelete: Cascade)
   contentId String?
 
@@ -53,4 +55,9 @@ enum ContentType {
   TEXT
   IMAGE
   VIDEO
+}
+
+enum Role {
+  ADMIN
+  USER
 }
