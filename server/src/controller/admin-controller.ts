@@ -14,27 +14,17 @@ export async function createTags(
   }
 
   try {
-    const tag = await prisma.tag.findUnique({
-      where: {
+    const newTag = await prisma.tag.create({
+      data: {
         name: tagName,
       },
     });
 
-    if (!tag) {
-      const newTag = await prisma.tag.create({
-        data: {
-          name: tagName,
-        },
-      });
-
-      res.json({
-        type: "success",
-        message: "Tag created successfully",
-        tags: newTag,
-      });
-    } else {
-      next(createHttpError(404, "Can't create tag!!"));
-    }
+    res.json({
+      type: "success",
+      message: "Tag created successfully",
+      tags: newTag,
+    });
   } catch (error) {
     console.log("--error", error);
     next(createHttpError(500, "Invalid server error"));
