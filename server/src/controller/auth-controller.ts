@@ -37,7 +37,6 @@ export const registerUser = async (
             password: hashedPassword,
           },
         });
-
         const token = jwt.sign(
           {
             userId: newUser.id,

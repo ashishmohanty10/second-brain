@@ -14,7 +14,6 @@ export function isAdminMiddleware(
     return next(createHttpError(401, "User not authenticated"));
   }
 
-  console.log(req.user);
   if (req.user.role !== "ADMIN") {
     return res.status(401).json({
       message: "Admin Only",

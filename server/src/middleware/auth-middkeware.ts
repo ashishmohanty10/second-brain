@@ -23,7 +23,6 @@ export function authMiddleware(
   const token = authHeader.split(" ")[1];
 
   try {
-    console.log(token);
     const decodedToken = jwt.verify(token, config.jwtSecret as string) as {
       userId: string;
       role: "ADMIN" | "USER";
@@ -32,15 +31,15 @@ export function authMiddleware(
     if (!decodedToken.userId) {
       throw createHttpError(401, "Invalid token payload");
     }
-
     req.user = { id: decodedToken.userId, role: decodedToken.role };
+
     next();
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       return next(createHttpError(401, "Invalid or expired token"));
     }
 
-    console.log(error);
+    console.log("error", error);
     return next(createHttpError(500, "Internal server error"));
   }
 }

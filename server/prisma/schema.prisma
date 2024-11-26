@@ -13,7 +13,6 @@ model User {
   firstname String
   lastname  String
   password  String
-  links     Link[]
   contents  Content[]
   role      Role      @default(USER)
 
@@ -21,32 +20,24 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-model Link {
-  id     String  @id @default(cuid())
-  hash   String  @unique
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String?
-
-  createdAt DateTime @default(now())
-}
-
 model Content {
-  id     String      @id @default(cuid())
-  link   String      @unique
+  id String @id @default(cuid())
+
+  name   String
   type   ContentType
+  userId String
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  link   String      @unique
   tags   Tag[]
-  user   User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String?
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Tag {
-  id   String @id @default(cuid())
-  name String
-
-  content   Content? @relation(fields: [contentId], references: [id], onDelete: Cascade)
-  contentId String?
+  id      String    @id @default(cuid())
+  name    String    @unique
+  content Content[]
 
   createdAt DateTime @default(now())
 }
