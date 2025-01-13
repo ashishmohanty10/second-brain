@@ -86,7 +86,7 @@ export async function signinController(
       return next(createHttpError(400, "Invalid credentials"));
     }
 
-    const token = jwt.sign({ user: user.id }, config.jwt_secret as string, {
+    const token = jwt.sign({ userId: user.id }, config.jwt_secret as string, {
       expiresIn: "1h",
     });
 
