@@ -51,3 +51,24 @@ export async function createPost(
     next(createHttpError(500, "Internal server error"));
   }
 }
+
+export async function getAllPosts(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const postData = await prisma.posts.findMany({
+      where: {
+        userId: req.user?.id,
+      },
+    });
+
+    res.status(200).json({
+      data: postData,
+    });
+  } catch (error) {
+    console.log("error while getting all posts");
+    next(createHttpError(500, "Internal server error"));
+  }
+}
