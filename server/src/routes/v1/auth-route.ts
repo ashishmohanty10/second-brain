@@ -4,7 +4,7 @@ import {
   signupController,
 } from "../../controllers/auth-controller";
 
-export const user = Router();
+export const authRouter = Router();
 
-user.post("/signup", signupController);
-user.post("/signin", signinController);
+authRouter.post("/signup", signupController);
+authRouter.post("/signin", signinController);

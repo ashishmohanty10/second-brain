@@ -14,41 +14,36 @@ datasource db {
 }
 
 model User {
-  id String @id @unique @default(cuid())
-
+  id       String  @id @unique @default(cuid())
   name     String
   email    String  @unique
   password String
   image    String?
-
-  posts Posts[]
+  posts    Posts[]
 
   createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 model Posts {
-  id String @id @unique @default(cuid())
-
-  title String
-  link  String
-  image String?
+  id      String  @id @unique @default(cuid())
+  title   String
+  content String
+  link    String? @unique
+  image   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    String
   User      User     @relation(fields: [userId], references: [id])
-
-  userId String
-  Tags   Tags[]
+  tags      Tags[]   @relation("PostTags")
 }
 
 model Tags {
-  id   String @id @unique @default(cuid())
-  tags String
+  id  String @id @unique @default(cuid())
+  tag String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  Posts   Posts  @relation(fields: [postsId], references: [id])
-  postsId String
+  posts     Posts[]  @relation("PostTags")
 }
