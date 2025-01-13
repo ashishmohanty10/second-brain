@@ -1,1 +1,0 @@
-{"root":["./server.ts","./src/index.ts","./src/config/config.ts","./src/controller/auth-controller.ts","./src/controller/user-data.ts","./src/db/db.ts","./src/middleware/auth-middkeware.ts","./src/middleware/globalerror-handler.ts","./src/routes/userRoutes.ts"],"version":"5.6.3"}
