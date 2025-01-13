@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { signupSchema } from "../zod/types";
+import { signinSchema, signupSchema } from "../zod/types";
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -53,5 +53,49 @@ export async function signupController(
     });
   } catch (error) {
     console.log("--error while signup", error);
+    next(createHttpError(500, "Internal Server Error"));
+  }
+}
+
+export async function signinController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { email, password } = req.body;
+
+  try {
+    const data = signinSchema.safeParse({ email, password });
+    if (!data.success) {
+      return next(createHttpError(400, "Invalid inputs"));
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return next(createHttpError(400, "No user found"));
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return next(createHttpError(400, "Invalid credentials"));
+    }
+
+    const token = jwt.sign({ user: user.id }, config.jwt_secret as string, {
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({
+      token: token,
+      message: "User logged in successfully",
+    });
+  } catch (error) {
+    console.log("--error while signin", error);
+    next(createHttpError(500, "Internal Server Error"));
   }
 }

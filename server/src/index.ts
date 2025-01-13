@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { config } from "./config/config";
-import { authRoute } from "./routes/v1/auth-route";
+import { user } from "./routes/v1/auth-route";
 
 const app = express();
 const PORT = config.port || 3000;
@@ -12,7 +12,7 @@ app.get("/healthy", (req: Request, res: Response) => {
   });
 });
 
-app.use("/api/v1/user", authRoute);
+app.use("/api/v1/user", user);
 
 app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
