@@ -1,3 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Jersey+15&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    :root {
+      font-family: "Jersey";
+      --navigation-height: 6.5rem;
+    }
+
+    font-size: 62.5%;
+  }
+}
