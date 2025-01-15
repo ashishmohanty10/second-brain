@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../hooks/authStore";
 
 interface SignupFormProps {
   name: string;
@@ -18,18 +19,19 @@ export function Signup() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { login } = useAuthStore();
 
   const onSubmit: SubmitHandler<SignupFormProps> = async (data) => {
     setLoading(true);
     setErrorMessage(null);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/signup`,
-        data
+        data,
+        { withCredentials: true }
       );
-
-      localStorage.setItem("token", response.data.token);
+      login();
       navigate("/dashboard");
     } catch (error) {
       console.log("Error while signinIn", error);

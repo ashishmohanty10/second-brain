@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { cn } from "../../lib/utils";
 
 const SideBarLink = [
   { id: 1, title: "Dashboard", path: "/dashboard" },
@@ -8,19 +9,23 @@ const SideBarLink = [
 export function SideBar() {
   const location = useLocation();
   return (
-    <div className="col-span-1 h-full border-r shadow-md p-4 space-y-4">
-      {SideBarLink.map((item) => (
-        <div key={item.id}>
-          <Link
-            to={item.path}
-            className={`text-lg font-medium hover:underline duration-100 transition-transform, ${
-              location.pathname === item.path ? "underline" : ""
-            }`}
-          >
-            {item.title}
+    <div className="col-span-1 border p-5 h-screen rounded-2xl flex-1">
+      <div className="flex flex-col gap-y-5">
+        {SideBarLink.map((item) => (
+          <Link to={item.path}>
+            <button
+              key={item.id}
+              className={cn(
+                "w-full bg-gray-200 rounded-md text-center text-sm font-semibold hover:bg-gray-500 hover:text-white transition-colors py-2 cur",
+                location.pathname === item.path &&
+                  "bg-gray-500 text-white transition-colors"
+              )}
+            >
+              {item.title}
+            </button>
           </Link>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

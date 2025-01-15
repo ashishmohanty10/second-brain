@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../hooks/authStore";
 
 interface SigninProps {
   email: string;
@@ -18,16 +19,19 @@ export function Signin() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const { login } = useAuthStore();
+
   const onSubmit: SubmitHandler<SigninProps> = async (data) => {
     setLoading(true);
     setErrorMessage(null);
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/signin`,
-        data
+        data,
+        { withCredentials: true }
       );
 
-      localStorage.setItem("token", response.data.token);
+      login();
       navigate("/dashboard");
     } catch (error) {
       console.log("--error", error);

@@ -14,3 +14,15 @@
     font-size: 62.5%;
   }
 }
+
+@layer utilities {
+  .masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .break-inside-avoid {
+    break-inside: avoid;
+  }
+}

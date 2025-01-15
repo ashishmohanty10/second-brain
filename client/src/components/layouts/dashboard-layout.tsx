@@ -5,11 +5,13 @@ import { ContainerWrapper } from "../container";
 
 export function DashboardLayout() {
   return (
-    <ContainerWrapper>
+    <ContainerWrapper className="flex flex-col">
       <Navbar />
-      <div className="grid grid-cols-4 h-screen">
+
+      <div className="grid grid-cols-6 flex-1">
         <SideBar />
-        <div className="col-span-3 p-6">
+
+        <div className="col-span-5 p-5">
           <Outlet />
         </div>
       </div>
