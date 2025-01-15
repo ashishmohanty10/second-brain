@@ -6,11 +6,11 @@ import {
   getPostById,
   updatePost,
 } from "../../controllers/user-controller";
-import { authmiddleware } from "../../middleware/auth-middleware";
+import { authMiddleware } from "../../middleware/auth-middleware";
 
 export const userRouter = Router();
 
-userRouter.use(authmiddleware);
+userRouter.use(authMiddleware);
 userRouter.post("/post", createPost);
 userRouter.get("/post", getAllPosts);
 

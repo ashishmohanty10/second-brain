@@ -1,14 +1,10 @@
 import { Link } from "react-router-dom";
 import { ContainerWrapper } from "../container";
 import { useAuthStore } from "../../hooks/authStore";
-import { useEffect } from "react";
 import axios from "axios";
 
 export function Navbar() {
-  const { isAuthenticated, logout } = useAuthStore();
-  useEffect(() => {
-    console.log(isAuthenticated);
-  }, [isAuthenticated]);
+  const { isAuthenticated } = useAuthStore();
   return (
     <div className="border shadow-sm h-navigation-height rounded-2xl py-2 mt-4">
       <ContainerWrapper className="flex items-center justify-between px-4">
@@ -25,11 +21,6 @@ export function Navbar() {
                   {},
                   { withCredentials: true }
                 );
-                console.timeEnd("start");
-                console.log("loggedOut");
-                setTimeout(() => {
-                  window.location.reload();
-                }, 5 * 1000);
               }}
             >
               Logout

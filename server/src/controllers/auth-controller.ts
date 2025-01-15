@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { CookieOptions, NextFunction, Request, Response } from "express";
 import { signinSchema, signupSchema } from "../zod/types";
 
 import jwt from "jsonwebtoken";
@@ -23,14 +23,14 @@ export async function signupController(
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: {
         email,
       },
     });
 
-    if (user) {
-      return next(createHttpError(409, "User already exits"));
+    if (existingUser) {
+      return next(createHttpError(409, "User already exists"));
     }
 
     const newUser = await prisma.user.create({
@@ -41,21 +41,49 @@ export async function signupController(
       },
     });
 
-    const token = jwt.sign(
+    const access_token = jwt.sign(
+      { userId: newUser.id },
+      config.jwt_secret as string,
+      { expiresIn: "168h" }
+    );
+
+    const refresh_token = jwt.sign(
       { userId: newUser.id },
       config.jwt_secret as string,
       { expiresIn: "1h" }
     );
 
+    res.cookie("access_token", access_token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: config.node_env === "development",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: config.node_env === "development",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     res.status(201).json({
-      token: token,
+      access_token: access_token,
+      refresh_token: refresh_token,
       message: "User created successfully",
     });
   } catch (error) {
-    console.log("--error while signup", error);
+    console.error("--error while signup", error);
     next(createHttpError(500, "Internal Server Error"));
   }
 }
+
+const cookieSettings: CookieOptions = {
+  httpOnly: true,
+  sameSite: "strict",
+  secure: config.node_env === "development",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
 
 export async function signinController(
   req: Request,
@@ -86,16 +114,65 @@ export async function signinController(
       return next(createHttpError(400, "Invalid credentials"));
     }
 
-    const token = jwt.sign({ userId: user.id }, config.jwt_secret as string, {
-      expiresIn: "1h",
+    const access_token = jwt.sign(
+      { userId: user.id },
+      config.jwt_secret as string,
+      { expiresIn: "168h" }
+    );
+
+    const refresh_token = jwt.sign(
+      { userId: user.id },
+      config.jwt_secret as string,
+      { expiresIn: "1h" }
+    );
+
+    res.cookie("access_token", access_token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: config.node_env === "development",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: config.node_env === "development",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
-      token: token,
+      access_token: access_token,
+      refresh_token: refresh_token,
       message: "User logged in successfully",
     });
   } catch (error) {
     console.log("--error while signin", error);
     next(createHttpError(500, "Internal Server Error"));
+  }
+}
+
+export async function signoutController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: config.node_env !== "development",
+      path: "/",
+    });
+
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: config.node_env !== "development",
+      path: "/",
+    });
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    next(error);
   }
 }
