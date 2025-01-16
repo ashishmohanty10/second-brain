@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import { ContainerWrapper } from "../container";
 import { useAuthStore } from "../../hooks/authStore";
-import axios from "axios";
 
 export function Navbar() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthStore();
   return (
     <div className="border shadow-sm h-navigation-height rounded-2xl py-2 mt-4">
       <ContainerWrapper className="flex items-center justify-between px-4">
@@ -13,18 +12,7 @@ export function Navbar() {
         </Link>
         <div className="">
           {isAuthenticated ? (
-            <button
-              onClick={async () => {
-                console.time("start");
-                await axios.post(
-                  `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/logout`,
-                  {},
-                  { withCredentials: true }
-                );
-              }}
-            >
-              Logout
-            </button>
+            <button onClick={logout}>Logout</button>
           ) : (
             <div className="flex items-center space-x-4">
               <Link to="/signin">

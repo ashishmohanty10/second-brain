@@ -5,18 +5,39 @@ import { DashboardLayout } from "./components/layouts/dashboard-layout";
 import { Dashboard } from "./components/dashboard/dashboard";
 import { Settings } from "./components/settings/settings";
 import { QueryProvider } from "./components/providers/query-provider";
-// import { useAuthStore } from "./hooks/authStore";
+import { useAuthStore } from "./hooks/authStore";
+import { useEffect } from "react";
 import { ProtectedRoute } from "./components/protected-routes";
-// import { useEffect } from "react";
+import { PublicRoute } from "./hooks/useAuth";
 
 function App() {
+  const checkAuth = useAuthStore((state) => state.checkAuth);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   return (
     <div>
       <Router>
         <QueryProvider>
           <Routes>
-            <Route element={<Signup />} path="/signup" />
-            <Route element={<Signin />} path="/signin" />
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <Signup />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/signin"
+              element={
+                <PublicRoute>
+                  <Signin />
+                </PublicRoute>
+              }
+            />
             <Route
               path="/dashboard"
               element={

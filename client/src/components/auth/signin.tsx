@@ -31,8 +31,8 @@ export function Signin() {
         { withCredentials: true }
       );
 
-      login();
       navigate("/dashboard");
+      login();
     } catch (error) {
       console.log("--error", error);
     }

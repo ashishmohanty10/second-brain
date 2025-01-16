@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, Heart, MessageCircle, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Post {
@@ -82,6 +82,12 @@ export function Dashboard() {
                 {tag.tag}
               </span>
             ))}
+          </div>
+
+          <div className="flex items-center gap-x-1">
+            <Heart />
+            <MessageCircle />
+            <Trash2 className="text-red-500 hover:text-rose-700 transition-colors " />
           </div>
         </div>
       ))}

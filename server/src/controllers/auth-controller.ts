@@ -176,3 +176,18 @@ export async function signoutController(
     next(error);
   }
 }
+
+export async function verifyAuth(req: Request, res: Response) {
+  try {
+    const token = req.cookies.access_token;
+
+    if (!token) {
+      res.status(401).json({ isAuthenticated: false });
+    }
+
+    jwt.verify(token, config.jwt_secret as string);
+    res.status(200).json({ isAuthenticated: true });
+  } catch (error) {
+    res.status(401).json({ isAuthenticated: false });
+  }
+}

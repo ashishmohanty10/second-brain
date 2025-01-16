@@ -1,11 +1,15 @@
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "./authStore";
 
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore((state) => state);
+export function PublicRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuthStore((state) => state);
 
-  if (!isAuthenticated) {
-    return <Navigate to="/signin" replace />;
+  if (isLoading) {
+    return null; // or a loading spinner
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
