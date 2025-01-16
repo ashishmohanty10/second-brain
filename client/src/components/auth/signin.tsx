@@ -31,7 +31,7 @@ export function Signin() {
         { withCredentials: true }
       );
 
-      navigate("/dashboard");
+      navigate("/allPosts");
       login();
     } catch (error) {
       console.log("--error", error);

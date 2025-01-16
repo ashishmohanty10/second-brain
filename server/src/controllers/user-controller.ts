@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import createHttpError from "http-errors";
-import { postSchema } from "../zod/types";
+import { postSchema, updateProfile } from "../zod/types";
 import { prisma } from "../db/db";
 import { AuthRequest } from "../middleware/auth-middleware";
 
@@ -241,5 +241,86 @@ export async function getAllPostsByUsers(
   } catch (error) {
     console.error("Error fetching posts", error);
     next(error);
+  }
+}
+
+export async function getUserInfo(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user?.id,
+      },
+      select: {
+        email: true,
+        createdAt: true,
+        image: true,
+        name: true,
+      },
+    });
+
+    res.status(200).json({
+      data: user,
+    });
+  } catch (error) {
+    next(createHttpError(500, "Internal server error"));
+    console.log("Internal server error", error);
+  }
+}
+
+export async function updateUserInfo(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  const { name, email } = req.body;
+
+  try {
+    const parsedData = updateProfile.safeParse({ name, email });
+    if (!parsedData.success) {
+      res.status(400).json({
+        message: "Invalid input data",
+        errors: parsedData.error.errors,
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.user?.id,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({
+        message: "No user found",
+      });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        name,
+        email,
+      },
+      select: {
+        name: true,
+        email: true,
+      },
+    });
+
+    res.status(200).json({
+      message: "Data updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating user info:", error);
+    res.status(500).json({
+      message: "An unexpected error occurred",
+    });
   }
 }
