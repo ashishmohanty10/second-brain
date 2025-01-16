@@ -5,7 +5,7 @@ export function PublicRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuthStore((state) => state);
 
   if (isLoading) {
-    return null; // or a loading spinner
+    return null;
   }
 
   if (isAuthenticated) {

@@ -9,6 +9,7 @@ interface Post {
   link?: string;
   image: string;
   tags: { tag: string }[];
+  id: number;
 }
 
 export function Dashboard() {
@@ -46,7 +47,7 @@ export function Dashboard() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 masonry-grid">
-      {data.data.map(({ title, content, image, link, tags }) => (
+      {data.data.map(({ title, content, image, link, tags, id }) => (
         <div
           className="border p-5 h-fit rounded-md shadow-sm text-center space-y-5"
           key={title}
@@ -87,7 +88,18 @@ export function Dashboard() {
           <div className="flex items-center gap-x-1">
             <Heart />
             <MessageCircle />
-            <Trash2 className="text-red-500 hover:text-rose-700 transition-colors " />
+            <Trash2
+              className="text-red-500 hover:text-rose-700 transition-colors "
+              onClick={async () => {
+                console.log(id);
+                await axios.delete(
+                  `${import.meta.env.VITE_BACKEND_URL}/api/v1/user/post`,
+                  { data: { id }, withCredentials: true }
+                );
+                console.log("Deleted successfully");
+                window.location.reload();
+              }}
+            />
           </div>
         </div>
       ))}

@@ -131,6 +131,7 @@ export async function deletePost(
   next: NextFunction
 ) {
   const { id } = req.body;
+  console.log(id);
 
   try {
     const post = await prisma.posts.findUnique({
@@ -209,5 +210,36 @@ export async function updatePost(
   } catch (error) {
     console.error("- Error while updating post:", error);
     next(createHttpError(500, "Internal Server error"));
+  }
+}
+
+export async function getAllPostsByUsers(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const posts = await prisma.posts.findMany({
+      include: {
+        User: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        tags: {
+          select: {
+            tag: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+      data: posts,
+    });
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    next(error);
   }
 }

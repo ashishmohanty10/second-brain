@@ -9,6 +9,7 @@ import { useAuthStore } from "./hooks/authStore";
 import { useEffect } from "react";
 import { ProtectedRoute } from "./components/protected-routes";
 import { PublicRoute } from "./hooks/useAuth";
+import { AllPosts } from "./components/dashboard/all-posts";
 
 function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -39,14 +40,15 @@ function App() {
               }
             />
             <Route
-              path="/dashboard"
+              path="/allPosts"
               element={
                 <ProtectedRoute>
                   <DashboardLayout />
                 </ProtectedRoute>
               }
             >
-              <Route element={<Dashboard />} index />
+              <Route element={<AllPosts />} index />
+              <Route element={<Dashboard />} path="dashboard" />
               <Route element={<Settings />} path="settings" />
             </Route>
           </Routes>

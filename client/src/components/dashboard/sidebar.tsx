@@ -2,8 +2,9 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../lib/utils";
 
 const SideBarLink = [
-  { id: 1, title: "Dashboard", path: "/dashboard" },
-  { id: 3, title: "Settings", path: "/dashboard/settings" },
+  { id: 1, title: "All Posts", path: "/allPosts" },
+  { id: 1, title: "Dashboard", path: "/allPosts/dashboard" },
+  { id: 2, title: "Settings", path: "/allPosts/settings" },
 ];
 
 export function SideBar() {
@@ -12,7 +13,7 @@ export function SideBar() {
     <div className="col-span-1 border p-5 h-screen rounded-2xl flex-1">
       <div className="flex flex-col gap-y-5">
         {SideBarLink.map((item) => (
-          <Link to={item.path}>
+          <Link to={item.path} key={item.id}>
             <button
               key={item.id}
               className={cn(
